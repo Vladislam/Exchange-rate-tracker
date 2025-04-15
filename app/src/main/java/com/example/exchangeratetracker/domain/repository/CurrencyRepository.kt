@@ -11,4 +11,5 @@ interface CurrencyRepository {
     fun observePinnedRates(): Flow<List<CurrencyRate>>
     suspend fun pinCurrency(code: String)
     suspend fun unpinCurrency(code: String)
+    fun observeSearchRates(base: String, query: String): Flow<List<CurrencyRate>>
 }

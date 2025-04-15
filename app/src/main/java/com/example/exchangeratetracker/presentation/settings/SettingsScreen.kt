@@ -1,6 +1,7 @@
 package com.example.exchangeratetracker.presentation.settings
 
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -25,9 +26,11 @@ fun SettingsScreen(
 ) {
     val context = LocalContext.current
 
-    Column(Modifier
-        .fillMaxSize()
-        .padding(16.dp)) {
+    Column(
+        Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
         Text("Base Currency", style = MaterialTheme.typography.titleLarge)
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -38,6 +41,7 @@ fun SettingsScreen(
             label = { Text("Base currency (locked)") },
             modifier = Modifier
                 .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.errorContainer)
                 .clickable {
                     Toast
                         .makeText(

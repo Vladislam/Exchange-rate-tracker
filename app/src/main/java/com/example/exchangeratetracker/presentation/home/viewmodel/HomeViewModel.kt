@@ -3,6 +3,7 @@ package com.example.exchangeratetracker.presentation.home.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.exchangeratetracker.domain.usecase.ObservePinnedRatesUseCase
+import com.example.exchangeratetracker.domain.usecase.PinCurrencyUseCase
 import com.example.exchangeratetracker.domain.usecase.UnpinCurrencyUseCase
 import com.example.exchangeratetracker.presentation.home.model.HomeIntent
 import com.example.exchangeratetracker.presentation.home.model.HomeUiEffect
@@ -22,6 +23,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val unpinCurrencyUseCase: UnpinCurrencyUseCase,
+    private val pinCurrencyUseCase: PinCurrencyUseCase,
     private val observePinnedRatesUseCase: ObservePinnedRatesUseCase,
 ) : ViewModel(), HomeIntent {
 
@@ -51,6 +53,12 @@ class HomeViewModel @Inject constructor(
     override fun onUnpinCurrency(code: String) {
         viewModelScope.launch {
             unpinCurrencyUseCase(code)
+        }
+    }
+
+    override fun onPinCurrency(code: String) {
+        viewModelScope.launch {
+            pinCurrencyUseCase(code)
         }
     }
 }

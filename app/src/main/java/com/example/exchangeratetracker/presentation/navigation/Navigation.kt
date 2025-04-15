@@ -1,26 +1,34 @@
 package com.example.exchangeratetracker.presentation.navigation
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.exchangeratetracker.AppViewModel
 import com.example.exchangeratetracker.presentation.home.navigation.homeNavigation
+import com.example.exchangeratetracker.presentation.navigation.component.NavigationBarItemStyled
 import com.example.exchangeratetracker.presentation.search.navigation.searchNavigation
 import com.example.exchangeratetracker.presentation.settings.navigation.settingsNavigation
 
 @Composable
 fun Navigation() {
     val navController = rememberNavController()
-    val appViewModel = hiltViewModel<AppViewModel>()
+    val currentRoute by navController.currentBackStackEntryAsState()
+    val selectedRoute = currentRoute?.destination?.route
 
     val items = listOf(
         BottomNavItem.Home,
@@ -30,30 +38,45 @@ fun Navigation() {
 
     Scaffold(
         bottomBar = {
-            NavigationBar {
-                val currentRoute =
-                    navController.currentBackStackEntryAsState().value?.destination?.route
-                items.forEach { item ->
-                    NavigationBarItem(
-                        selected = currentRoute == item.route,
-                        onClick = {
-                            if (currentRoute != item.route) {
-                                navController.navigate(item.route) {
-                                    popUpTo(navController.graph.startDestinationId) {
-                                        saveState = true
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.errorContainer)
+                    .padding(16.dp)
+            ) {
+                Surface(
+                    shape = MaterialTheme.shapes.large,
+                    tonalElevation = 4.dp,
+                    color = MaterialTheme.colorScheme.surface,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(64.dp)
+                        .align(Alignment.Center)
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        items.forEach { item ->
+                            val selected = item.route == selectedRoute
+                            NavigationBarItemStyled(
+                                item = item,
+                                selected = selected,
+                                onClick = {
+                                    if (!selected) {
+                                        navController.navigate(item.route) {
+                                            popUpTo(navController.graph.startDestinationId) {
+                                                saveState = true
+                                            }
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        }
                                     }
-                                    launchSingleTop = true
-                                    restoreState = true
                                 }
-                            }
-                        },
-                        icon = {
-                            Icon(item.icon, contentDescription = item.label)
-                        },
-                        label = {
-                            Text(item.label)
+                            )
                         }
-                    )
+                    }
                 }
             }
         }

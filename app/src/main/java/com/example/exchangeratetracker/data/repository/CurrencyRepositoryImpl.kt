@@ -43,12 +43,13 @@ class CurrencyRepositoryImpl @Inject constructor(
     override suspend fun getExchangeRatesForSymbols(symbols: List<String>): Resource<List<CurrencyRate>> {
         return try {
             val baseCode = basePrefs.baseCurrency.first()
-            val baseInfo = currencyInfoDao.getByCode(baseCode)?.toDomain()
-                ?: CurrencyInfo("USD", "US Dollar")
+            val baseInfo = CurrencyInfo("USD", "United States Dollar")
+
+            val existing = rateDao.getRatesForBase(baseCode)
+            val pinnedMap = existing.associate { (it.baseCode to it.targetCode) to it.isPinned }
 
             val response = api.getLatestRates(
                 appId = BuildConfig.OPEN_EXCHANGE_API_KEY,
-//                base = baseCode,
                 symbols = symbols.joinToString(",")
             )
 
@@ -56,10 +57,11 @@ class CurrencyRepositoryImpl @Inject constructor(
                 val targetInfo = currencyInfoDao.getByCode(targetCode)?.toDomain()
                     ?: CurrencyInfo(targetCode, targetCode)
 
-                CurrencyRate(baseInfo, targetInfo, rate, false)
+                val isPinned = pinnedMap[baseInfo.code to targetCode] ?: false
+
+                CurrencyRate(baseInfo, targetInfo, rate, isPinned)
             }
 
-            rateDao.deleteRatesForBase(baseCode)
             rateDao.insertRates(rates.map { it.toEntity() })
 
             Resource.Success(rates)
@@ -87,5 +89,15 @@ class CurrencyRepositoryImpl @Inject constructor(
 
     override suspend fun unpinCurrency(code: String) {
         rateDao.unpin(code)
+    }
+
+    override fun observeSearchRates(base: String, query: String): Flow<List<CurrencyRate>> {
+        return rateDao.searchRates(base, query).map { entities ->
+            val all = currencyInfoDao.getAll().map { it.toDomain() }
+            entities.mapNotNull { entity ->
+                val target = all.find { it.code == entity.targetCode }
+                target?.let { entity.toDomain(CurrencyInfo(base, ""), it) }
+            }
+        }
     }
 }

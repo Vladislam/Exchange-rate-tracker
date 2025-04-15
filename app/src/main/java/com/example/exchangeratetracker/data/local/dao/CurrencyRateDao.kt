@@ -24,4 +24,10 @@ interface CurrencyRateDao {
 
     @Query("UPDATE currency_rates SET isPinned = 0 WHERE targetCode = :code")
     suspend fun unpin(code: String)
+
+    @Query("SELECT * FROM currency_rates WHERE baseCode = :base")
+    suspend fun getRatesForBase(base: String): List<CurrencyRateEntity>
+
+    @Query("SELECT * FROM currency_rates WHERE baseCode = :base AND (targetCode LIKE '%' || :query || '%' OR targetCode IN (SELECT code FROM currency_info WHERE name LIKE '%' || :query || '%'))")
+    fun searchRates(base: String, query: String): Flow<List<CurrencyRateEntity>>
 }

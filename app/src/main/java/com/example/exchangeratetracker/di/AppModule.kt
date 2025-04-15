@@ -7,7 +7,9 @@ import com.example.exchangeratetracker.data.local.dao.CurrencyInfoDao
 import com.example.exchangeratetracker.data.local.preferences.BaseCurrencyPreferences
 import com.example.exchangeratetracker.data.remote.api.OpenExchangeApi
 import com.example.exchangeratetracker.data.repository.CurrencyRepositoryImpl
+import com.example.exchangeratetracker.data.repository.RecentSearchRepositoryImpl
 import com.example.exchangeratetracker.domain.repository.CurrencyRepository
+import com.example.exchangeratetracker.domain.repository.RecentSearchRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -68,6 +70,14 @@ object AppModule {
             db.currencyRateDao(),
             basePrefs
         )
+    }
+
+    @Provides
+    @Singleton
+    fun provideSearchRepository(
+        db: CurrencyDatabase,
+    ): RecentSearchRepository {
+        return RecentSearchRepositoryImpl(db.recentSearchDao())
     }
 
     @Provides

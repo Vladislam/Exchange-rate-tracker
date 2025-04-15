@@ -5,5 +5,6 @@ import com.example.exchangeratetracker.domain.model.CurrencyRate
 data class SearchUiState(
     val query: String = "",
     val isLoading: Boolean = false,
-    val results: List<CurrencyRate> = emptyList()
+    val results: List<CurrencyRate> = emptyList(),
+    val recentSearches: List<String> = emptyList(),
 )
