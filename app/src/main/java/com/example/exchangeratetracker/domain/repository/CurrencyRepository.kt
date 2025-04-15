@@ -1,6 +1,8 @@
 package com.example.exchangeratetracker.domain.repository
 
 import com.example.exchangeratetracker.domain.model.Currency
+import com.example.exchangeratetracker.domain.model.CurrencyInfo
+import com.example.exchangeratetracker.utils.Resource
 import kotlinx.coroutines.flow.Flow
 
 interface CurrencyRepository {
@@ -9,4 +11,5 @@ interface CurrencyRepository {
     suspend fun removeCurrency(code: String)
     suspend fun pinCurrency(code: String)
     suspend fun unpinCurrency(code: String)
+    suspend fun getAvailableCurrencies(): Resource<List<CurrencyInfo>>
 }

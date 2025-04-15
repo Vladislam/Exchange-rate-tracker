@@ -12,4 +12,7 @@ interface OpenExchangeApi {
         @Query("app_id") appId: String = BuildConfig.OPEN_EXCHANGE_API_KEY,
         @Query("base") base: String = "USD",
     ): ExchangeRateResponse
+
+    @GET("currencies.json")
+    suspend fun getAvailableCurrencies(): Map<String, String>
 }

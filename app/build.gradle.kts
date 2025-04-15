@@ -101,4 +101,6 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.compose.ui.test)
     debugImplementation(libs.compose.ui.manifest)
+
+    implementation(libs.okhttp.logging)
 }

@@ -8,17 +8,21 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavHostController
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.exchangeratetracker.AppViewModel
 import com.example.exchangeratetracker.presentation.home.HomeScreen
-import com.example.exchangeratetracker.presentation.home.SettingsScreen
-import com.example.exchangeratetracker.presentation.search.SearchScreen
+import com.example.exchangeratetracker.presentation.search.navigation.searchNavigation
+import com.example.exchangeratetracker.presentation.settings.SettingsScreen
 
 @Composable
-fun Navigation(navController: NavHostController = rememberNavController()) {
+fun Navigation() {
+    val navController = rememberNavController()
+    val appViewModel = hiltViewModel<AppViewModel>()
+
     val items = listOf(
         BottomNavItem.Home,
         BottomNavItem.Search,
@@ -63,9 +67,7 @@ fun Navigation(navController: NavHostController = rememberNavController()) {
             composable(BottomNavItem.Home.route) {
                 HomeScreen()
             }
-            composable(BottomNavItem.Search.route) {
-                SearchScreen()
-            }
+            searchNavigation()
             composable(BottomNavItem.Settings.route) {
                 SettingsScreen()
             }
