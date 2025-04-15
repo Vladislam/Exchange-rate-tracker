@@ -20,7 +20,8 @@ A modern Android application for tracking real-time exchange rates — built as 
 
 ## 📷 Screenshots
 
-> *(Add your own here if you'd like to impress visually)*
+<img width="405" alt="image" src="https://github.com/user-attachments/assets/2b4a0d59-45ee-41ca-b93c-755493986e73" />
+<img width="409" alt="image" src="https://github.com/user-attachments/assets/c2301890-27f9-4799-84f4-894d180ccf06" />
 
 ---
 
