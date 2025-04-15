@@ -1,9 +1,20 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.ksp)
 }
 
+
+val localProps = Properties().apply {
+    val localFile = rootProject.file("local.properties")
+    if (localFile.exists()) {
+        load(localFile.inputStream())
+    }
+}
+val openExchangeApiKey = localProps["OPEN_EXCHANGE_API_KEY"] as String
 android {
     namespace = "com.example.exchangeratetracker"
     compileSdk = 35
@@ -16,6 +27,14 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildFeatures {
+        buildConfig = true
+    }
+
+    defaultConfig {
+        buildConfigField("String", "OPEN_EXCHANGE_API_KEY", "\"$openExchangeApiKey\"")
     }
 
     buildTypes {
@@ -37,6 +56,9 @@ android {
     buildFeatures {
         compose = true
     }
+    ksp {
+        arg("room.incremental", "true")
+    }
 }
 
 dependencies {
@@ -56,4 +78,26 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    implementation(libs.lifecycle.compose)
+    implementation(libs.navigation.compose)
+
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+    implementation(libs.hilt.navigation.compose)
+
+    implementation(libs.retrofit)
+    implementation(libs.gson)
+    implementation(libs.retrofit.gson)
+
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
+
+    implementation(libs.coroutines.core)
+    implementation(libs.coroutines.android)
+
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.compose.ui.test)
+    debugImplementation(libs.compose.ui.manifest)
 }
