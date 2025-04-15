@@ -7,6 +7,6 @@ class PreloadAvailableCurrenciesUseCase @Inject constructor(
     private val repository: CurrencyRepository
 ) {
     suspend operator fun invoke() {
-        repository.getAvailableCurrencies() // already cached if exists
+        repository.getAvailableCurrencies()
     }
 }

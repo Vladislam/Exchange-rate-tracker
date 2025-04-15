@@ -10,11 +10,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.exchangeratetracker.AppViewModel
-import com.example.exchangeratetracker.presentation.home.HomeScreen
+import com.example.exchangeratetracker.presentation.home.navigation.homeNavigation
 import com.example.exchangeratetracker.presentation.search.navigation.searchNavigation
 import com.example.exchangeratetracker.presentation.settings.navigation.settingsNavigation
 
@@ -64,9 +63,7 @@ fun Navigation() {
             startDestination = BottomNavItem.Home.route,
             modifier = Modifier.padding(padding)
         ) {
-            composable(BottomNavItem.Home.route) {
-                HomeScreen()
-            }
+            homeNavigation()
             searchNavigation()
             settingsNavigation()
         }

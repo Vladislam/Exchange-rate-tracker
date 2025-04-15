@@ -1,14 +1,21 @@
 package com.example.exchangeratetracker.presentation.search
 
 import android.widget.Toast
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -22,7 +29,6 @@ import kotlinx.coroutines.flow.Flow
 fun SearchScreen(uiState: SearchUiState, uiEffect: Flow<SearchUiEffect>, intent: SearchIntent) {
 
     HandleUiEffect(uiEffect)
-
     SearchBody(uiState, intent)
 }
 
@@ -67,21 +73,11 @@ fun SearchBody(
                 }
             }
         )
-        val filtered = if (uiState.query.isBlank()) uiState.items.take(15)
-        else uiState.items.filter {
-            it.code.contains(uiState.query, ignoreCase = true) || it.name.contains(
-                uiState.query,
-                ignoreCase = true
-            )
-        }
-
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
-            items(filtered) { currency ->
-                SearchCurrencyItem(
-                    code = currency.code,
-                    name = currency.name,
-                    onClick = { intent.onCurrencyClick(currency.code) }
-                )
+        LazyColumn {
+            items(uiState.results) { rate ->
+                SearchCurrencyItem(rate = rate) {
+                    intent.onCurrencyClick(rate.target.code)
+                }
             }
         }
     }

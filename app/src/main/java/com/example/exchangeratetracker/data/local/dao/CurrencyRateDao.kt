@@ -5,16 +5,23 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.exchangeratetracker.data.local.entities.CurrencyRateEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CurrencyRateDao {
-
-    @Query("SELECT * FROM currency_rates WHERE baseCode = :base")
-    suspend fun getRatesForBase(base: String): List<CurrencyRateEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRates(rates: List<CurrencyRateEntity>)
 
     @Query("DELETE FROM currency_rates WHERE baseCode = :base")
     suspend fun deleteRatesForBase(base: String)
+
+    @Query("SELECT * FROM currency_rates WHERE isPinned = 1")
+    fun observePinnedRates(): Flow<List<CurrencyRateEntity>>
+
+    @Query("UPDATE currency_rates SET isPinned = 1 WHERE targetCode = :code")
+    suspend fun pin(code: String)
+
+    @Query("UPDATE currency_rates SET isPinned = 0 WHERE targetCode = :code")
+    suspend fun unpin(code: String)
 }

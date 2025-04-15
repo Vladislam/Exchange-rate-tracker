@@ -7,10 +7,11 @@ import com.example.exchangeratetracker.domain.model.CurrencyRate
 fun CurrencyRateEntity.toDomain(
     base: CurrencyInfo,
     target: CurrencyInfo
-) = CurrencyRate(base, target, rate)
+) = CurrencyRate(base, target, rate, isPinned)
 
 fun CurrencyRate.toEntity() = CurrencyRateEntity(
     baseCode = base.code,
     targetCode = target.code,
-    rate = rate
+    rate = rate,
+    isPinned = isPinned
 )

@@ -24,5 +24,6 @@ import androidx.room.ForeignKey
 data class CurrencyRateEntity(
     val baseCode: String,
     val targetCode: String,
-    val rate: Double
+    val rate: Double,
+    val isPinned: Boolean = false
 )

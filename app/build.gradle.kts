@@ -105,4 +105,7 @@ dependencies {
     implementation(libs.okhttp.logging)
 
     implementation(libs.datastore.preferences)
+
+    implementation(libs.material3)
+    implementation(libs.compose.material)
 }

@@ -10,7 +10,6 @@ interface OpenExchangeApi {
     @GET("latest.json")
     suspend fun getLatestRates(
         @Query("app_id") appId: String = BuildConfig.OPEN_EXCHANGE_API_KEY,
-        @Query("base") base: String = "USD",
         @Query("symbols") symbols: String? = null,
     ): ExchangeRateResponse
 

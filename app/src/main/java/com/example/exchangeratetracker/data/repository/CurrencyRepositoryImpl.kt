@@ -1,7 +1,6 @@
 package com.example.exchangeratetracker.data.repository
 
 import com.example.exchangeratetracker.BuildConfig
-import com.example.exchangeratetracker.data.local.dao.CurrencyDao
 import com.example.exchangeratetracker.data.local.dao.CurrencyInfoDao
 import com.example.exchangeratetracker.data.local.dao.CurrencyRateDao
 import com.example.exchangeratetracker.data.local.mapper.toDomain
@@ -9,8 +8,6 @@ import com.example.exchangeratetracker.data.local.mapper.toEntity
 import com.example.exchangeratetracker.data.local.preferences.BaseCurrencyPreferences
 import com.example.exchangeratetracker.data.remote.api.OpenExchangeApi
 import com.example.exchangeratetracker.data.remote.mapper.toCurrencyInfoList
-import com.example.exchangeratetracker.data.remote.mapper.toCurrencyList
-import com.example.exchangeratetracker.domain.model.Currency
 import com.example.exchangeratetracker.domain.model.CurrencyInfo
 import com.example.exchangeratetracker.domain.model.CurrencyRate
 import com.example.exchangeratetracker.domain.repository.CurrencyRepository
@@ -22,45 +19,10 @@ import javax.inject.Inject
 
 class CurrencyRepositoryImpl @Inject constructor(
     private val api: OpenExchangeApi,
-    private val currencyDao: CurrencyDao,
     private val currencyInfoDao: CurrencyInfoDao,
     private val rateDao: CurrencyRateDao,
     private val basePrefs: BaseCurrencyPreferences
 ) : CurrencyRepository {
-
-    override suspend fun getLatestRates(base: String): List<Currency> {
-        return try {
-            val response = api.getLatestRates(
-                appId = BuildConfig.OPEN_EXCHANGE_API_KEY,
-                base = base,
-            )
-
-            val currencies = response.toCurrencyList()
-
-            val currencyEntities = currencies.map { it.toEntity() }
-            currencyDao.insertAll(currencyEntities)
-
-            currencies
-        } catch (e: Exception) {
-            currencyDao.getPinnedCurrencies().map { it.toDomain() }
-        }
-    }
-
-    override fun observeSavedCurrencies(): Flow<List<Currency>> {
-        return currencyDao.observePinnedCurrencies().map { it.map { entity -> entity.toDomain() } }
-    }
-
-    override suspend fun removeCurrency(code: String) {
-        currencyDao.deleteByCode(code)
-    }
-
-    override suspend fun pinCurrency(code: String) {
-        currencyDao.pin(code)
-    }
-
-    override suspend fun unpinCurrency(code: String) {
-        currencyDao.unpin(code)
-    }
 
     override suspend fun getAvailableCurrencies(): Resource<List<CurrencyInfo>> {
         val local = currencyInfoDao.getAll()
@@ -86,7 +48,7 @@ class CurrencyRepositoryImpl @Inject constructor(
 
             val response = api.getLatestRates(
                 appId = BuildConfig.OPEN_EXCHANGE_API_KEY,
-                base = baseCode,
+//                base = baseCode,
                 symbols = symbols.joinToString(",")
             )
 
@@ -94,7 +56,7 @@ class CurrencyRepositoryImpl @Inject constructor(
                 val targetInfo = currencyInfoDao.getByCode(targetCode)?.toDomain()
                     ?: CurrencyInfo(targetCode, targetCode)
 
-                CurrencyRate(baseInfo, targetInfo, rate)
+                CurrencyRate(baseInfo, targetInfo, rate, false)
             }
 
             rateDao.deleteRatesForBase(baseCode)
@@ -107,11 +69,23 @@ class CurrencyRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getCachedRatesForBase(base: CurrencyInfo): List<CurrencyRate> {
-        val rates = rateDao.getRatesForBase(base.code)
-        return rates.mapNotNull { entity ->
-            val target = currencyInfoDao.getByCode(entity.targetCode)?.toDomain()
-            if (target != null) CurrencyRate(base, target, entity.rate) else null
+    override fun observePinnedRates(): Flow<List<CurrencyRate>> {
+        val base = CurrencyInfo("USD", "United States Dollar")
+
+        return rateDao.observePinnedRates().map { entities ->
+            val all = currencyInfoDao.getAll().map { it.toDomain() }
+            entities.mapNotNull { entity ->
+                val target = all.find { it.code == entity.targetCode }
+                target?.let { entity.toDomain(base, it) }
+            }
         }
+    }
+
+    override suspend fun pinCurrency(code: String) {
+        rateDao.pin(code)
+    }
+
+    override suspend fun unpinCurrency(code: String) {
+        rateDao.unpin(code)
     }
 }

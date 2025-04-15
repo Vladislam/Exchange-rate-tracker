@@ -1,22 +1,23 @@
-package com.example.exchangeratetracker.presentation.settings.navigation
+package com.example.exchangeratetracker.presentation.home.navigation
 
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.example.exchangeratetracker.presentation.home.HomeScreen
+import com.example.exchangeratetracker.presentation.home.viewmodel.HomeViewModel
 import com.example.exchangeratetracker.presentation.navigation.BottomNavItem
-import com.example.exchangeratetracker.presentation.settings.SettingsScreen
-import com.example.exchangeratetracker.presentation.settings.viewmodel.SettingsViewModel
 
-fun NavGraphBuilder.settingsNavigation() {
+fun NavGraphBuilder.homeNavigation() {
     composable(
-        route = BottomNavItem.Settings.route
+        route = BottomNavItem.Home.route
     ) {
-        val viewModel = hiltViewModel<SettingsViewModel>()
+        val viewModel = hiltViewModel<HomeViewModel>()
         val state by viewModel.uiState.collectAsStateWithLifecycle()
-        SettingsScreen(
+        HomeScreen(
             uiState = state,
+            uiEffect = viewModel.uiEffect,
             intent = viewModel
         )
     }

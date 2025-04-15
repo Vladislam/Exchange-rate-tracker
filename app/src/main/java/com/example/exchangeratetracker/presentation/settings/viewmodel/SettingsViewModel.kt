@@ -1,4 +1,4 @@
-package com.example.exchangeratetracker.presentation.settings.viewModel
+package com.example.exchangeratetracker.presentation.settings.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
