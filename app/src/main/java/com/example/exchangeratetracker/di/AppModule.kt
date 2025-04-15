@@ -22,7 +22,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
-    // API
     @Provides
     @Singleton
     fun provideExchangeApi(): OpenExchangeApi {
@@ -33,7 +32,6 @@ object AppModule {
             .create(OpenExchangeApi::class.java)
     }
 
-    // Database
     @Provides
     @Singleton
     fun provideCurrencyDatabase(@ApplicationContext context: Context): CurrencyDatabase {
@@ -47,7 +45,6 @@ object AppModule {
     @Provides
     fun provideCurrencyDao(db: CurrencyDatabase) = db.currencyDao()
 
-    // Repository
     @Provides
     @Singleton
     fun provideCurrencyRepository(
@@ -57,7 +54,6 @@ object AppModule {
         return CurrencyRepositoryImpl(api, dao.currencyDao())
     }
 
-    // Use Cases
     @Provides
     fun provideGetSavedCurrenciesUseCase(repository: CurrencyRepository): GetSavedCurrenciesUseCase =
         GetSavedCurrenciesUseCase(repository)

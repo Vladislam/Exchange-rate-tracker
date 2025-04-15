@@ -7,4 +7,6 @@ interface CurrencyRepository {
     suspend fun getLatestRates(base: String): List<Currency>
     fun observeSavedCurrencies(): Flow<List<Currency>>
     suspend fun removeCurrency(code: String)
+    suspend fun pinCurrency(code: String)
+    suspend fun unpinCurrency(code: String)
 }

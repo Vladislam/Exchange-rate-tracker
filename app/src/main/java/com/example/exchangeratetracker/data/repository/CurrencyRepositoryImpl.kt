@@ -8,6 +8,7 @@ import com.example.exchangeratetracker.data.remote.api.OpenExchangeApi
 import com.example.exchangeratetracker.data.remote.mapper.toCurrencyList
 import com.example.exchangeratetracker.domain.model.Currency
 import com.example.exchangeratetracker.domain.repository.CurrencyRepository
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -35,11 +36,18 @@ class CurrencyRepositoryImpl @Inject constructor(
     }
 
     override fun observeSavedCurrencies(): Flow<List<Currency>> {
-        return dao.observePinnedCurrencies()
-            .map { it.map { entity -> entity.toDomain() } }
+        return dao.observePinnedCurrencies().map { it.map { entity -> entity.toDomain() } }
     }
 
     override suspend fun removeCurrency(code: String) {
         dao.deleteByCode(code)
+    }
+
+    override suspend fun pinCurrency(code: String) {
+        dao.pin(code)
+    }
+
+    override suspend fun unpinCurrency(code: String) {
+        dao.unpin(code)
     }
 }

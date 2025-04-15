@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Exchange rate tracker</string>
+    <string name="rate_value">Rate: %s</string>
 </resources>

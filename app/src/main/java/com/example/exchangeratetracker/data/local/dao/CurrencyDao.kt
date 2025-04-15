@@ -11,6 +11,9 @@ import kotlinx.coroutines.flow.Flow
 interface CurrencyDao {
 
     @Query("SELECT * FROM currencies WHERE isPinned = 1")
+    suspend fun getPinnedCurrencies(): List<CurrencyEntity>
+
+    @Query("SELECT * FROM currencies WHERE isPinned = 1")
     fun observePinnedCurrencies(): Flow<List<CurrencyEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -18,4 +21,10 @@ interface CurrencyDao {
 
     @Query("DELETE FROM currencies WHERE code = :code")
     suspend fun deleteByCode(code: String)
+
+    @Query("UPDATE currencies SET isPinned = 1 WHERE code = :code")
+    suspend fun pin(code: String)
+
+    @Query("UPDATE currencies SET isPinned = 0 WHERE code = :code")
+    suspend fun unpin(code: String)
 }
