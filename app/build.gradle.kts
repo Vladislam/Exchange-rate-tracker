@@ -80,6 +80,8 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
 
     implementation(libs.lifecycle.compose)
     implementation(libs.navigation.compose)
@@ -109,4 +111,5 @@ dependencies {
 
     implementation(libs.material3)
     implementation(libs.compose.material)
+    testImplementation(kotlin("test"))
 }
