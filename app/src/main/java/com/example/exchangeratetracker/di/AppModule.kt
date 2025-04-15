@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.example.exchangeratetracker.data.local.CurrencyDatabase
 import com.example.exchangeratetracker.data.local.dao.CurrencyInfoDao
+import com.example.exchangeratetracker.data.local.preferences.BaseCurrencyPreferences
 import com.example.exchangeratetracker.data.remote.api.OpenExchangeApi
 import com.example.exchangeratetracker.data.repository.CurrencyRepositoryImpl
 import com.example.exchangeratetracker.domain.repository.CurrencyRepository
@@ -64,9 +65,16 @@ object AppModule {
     @Singleton
     fun provideCurrencyRepository(
         api: OpenExchangeApi,
-        db: CurrencyDatabase
+        db: CurrencyDatabase,
+        basePrefs: BaseCurrencyPreferences,
     ): CurrencyRepository {
-        return CurrencyRepositoryImpl(api, db.currencyDao(), db.currencyInfoDao())
+        return CurrencyRepositoryImpl(
+            api,
+            db.currencyDao(),
+            db.currencyInfoDao(),
+            db.currencyRateDao(),
+            basePrefs
+        )
     }
 
     @Provides
@@ -80,4 +88,10 @@ object AppModule {
     @Provides
     fun provideRemoveCurrencyUseCase(repository: CurrencyRepository): RemoveCurrencyUseCase =
         RemoveCurrencyUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideBaseCurrencyPreferences(
+        @ApplicationContext context: Context
+    ): BaseCurrencyPreferences = BaseCurrencyPreferences(context)
 }

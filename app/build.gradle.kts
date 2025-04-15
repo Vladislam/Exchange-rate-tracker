@@ -103,4 +103,6 @@ dependencies {
     debugImplementation(libs.compose.ui.manifest)
 
     implementation(libs.okhttp.logging)
+
+    implementation(libs.datastore.preferences)
 }

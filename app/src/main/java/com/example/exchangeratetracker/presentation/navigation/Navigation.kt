@@ -16,7 +16,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.exchangeratetracker.AppViewModel
 import com.example.exchangeratetracker.presentation.home.HomeScreen
 import com.example.exchangeratetracker.presentation.search.navigation.searchNavigation
-import com.example.exchangeratetracker.presentation.settings.SettingsScreen
+import com.example.exchangeratetracker.presentation.settings.navigation.settingsNavigation
 
 @Composable
 fun Navigation() {
@@ -68,9 +68,7 @@ fun Navigation() {
                 HomeScreen()
             }
             searchNavigation()
-            composable(BottomNavItem.Settings.route) {
-                SettingsScreen()
-            }
+            settingsNavigation()
         }
     }
 }

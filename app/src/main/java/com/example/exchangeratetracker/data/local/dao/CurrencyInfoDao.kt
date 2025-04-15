@@ -14,4 +14,7 @@ interface CurrencyInfoDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(currencies: List<CurrencyInfoEntity>)
+
+    @Query("SELECT * FROM currency_info WHERE code = :code LIMIT 1")
+    suspend fun getByCode(code: String): CurrencyInfoEntity?
 }
