@@ -29,12 +29,12 @@ fun SettingsScreen(
     Column(
         Modifier
             .fillMaxSize()
+            .background(MaterialTheme.colorScheme.errorContainer)
             .padding(16.dp)
     ) {
         Text("Base Currency", style = MaterialTheme.typography.titleLarge)
         Spacer(modifier = Modifier.height(12.dp))
 
-        // Show base currency as read-only
         OutlinedTextField(
             value = "${uiState.selectedBase.name} (${uiState.selectedBase.code})",
             onValueChange = {},
